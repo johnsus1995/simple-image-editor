@@ -51,7 +51,6 @@ export default function Page() {
   }, []);
 
   const onClickReset = useCallback(() => {
-    router.push("/");
     setFilter({
       brightness: "1",
       contrast: "1",
@@ -62,7 +61,7 @@ export default function Page() {
     setOverlays({
       a: { top: 248, left: 169, title: "Image Overlay" },
     });
-  }, [router]);
+  }, []);
 
   const onClickSave = useCallback(() => {
     const image = {
