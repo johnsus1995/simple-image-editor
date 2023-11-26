@@ -50,6 +50,20 @@ export default function Page() {
     }));
   }, []);
 
+  const onClickReset = useCallback(() => {
+    router.push("/");
+    setFilter({
+      brightness: "1",
+      contrast: "1",
+      saturation: "1",
+      sepia: "0",
+      blackAndWhite: "0",
+    });
+    setOverlays({
+      a: { top: 248, left: 169, title: "Image Overlay" },
+    });
+  }, [router]);
+
   const onClickSave = useCallback(() => {
     const image = {
       id: isEditMode ? params.get("id") : uuidv4(),
@@ -64,16 +78,19 @@ export default function Page() {
     if (isEditMode) {
       dispatch(editSaveImage(image));
       toast.success("Image updated.");
+      onClickReset();
       return;
     }
     dispatch(saveImage(image));
     toast.success("Image Saved.");
+    onClickReset();
   }, [
     currentImage,
     dispatch,
     filter,
     imageTitle,
     isEditMode,
+    onClickReset,
     overlayText,
     overlays.a.left,
     overlays.a.top,
@@ -87,23 +104,10 @@ export default function Page() {
       setFilter(img.metadata);
       setOverlays({ a: img.overlay });
       setOverlayText(img.overlay.title);
-      setImageTitle(img?.metadata?.title || "")
+      setImageTitle(img?.metadata?.title || "");
     },
     [router],
   );
-
-  const onClickReset = () => {
-    setFilter({
-      brightness: "1",
-      contrast: "1",
-      saturation: "1",
-      sepia: "0",
-      blackAndWhite: "0",
-    });
-    setOverlays({
-      a: { top: 248, left: 169, title: "Image Overlay" },
-    });
-  };
 
   const getRandomImage = useCallback(async () => {
     router.push("/");
@@ -126,7 +130,7 @@ export default function Page() {
 
   return (
     <main className="flex flex-col md:flex-row">
-      <div className="w-full md:w-1/2 px-10 pt-10">
+      <div className="w-full px-10 pt-10 md:w-1/2">
         <div className="flex items-center justify-between">
           <input
             className="w-[150px] rounded-md border border-gray-300 px-6 py-1"
@@ -164,7 +168,7 @@ export default function Page() {
         </button>
 
         {!!images.length && (
-          <div className="mt-10 mb-10 md:mb-0">
+          <div className="mb-10 mt-10 md:mb-0">
             <h1 className="text font-bold">
               Recent Images
             </h1>
@@ -183,7 +187,7 @@ export default function Page() {
         )}
       </div>
 
-      <div className="h-screen w-full md:w-1/2 bg-[#E6E6E6] px-10 pt-10">
+      <div className="h-screen w-full bg-[#E6E6E6] px-10 pt-10 md:w-1/2">
         <div className="mb-10 flex justify-between">
           <h1>Filter</h1>
           <span
